@@ -117,7 +117,7 @@ impl Parse for DeviceInformationServiceConfiguration {
                     }
                 },
                 _ => {
-                    panic!("Unexpected field: {} = {:?}", key.to_string(), value);
+                    panic!("Unexpected field: {} = {:?}", key, value);
                 }
             }
         }

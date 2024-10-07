@@ -1,12 +1,11 @@
 use std::{
     collections::{HashMap, HashSet},
-    fmt::format,
     ops::Deref,
 };
 
 use indexmap::IndexMap;
 use proc_macro2::{Group, Ident, Span};
-use quote::{format_ident, quote, ToTokens, TokenStreamExt};
+use quote::{format_ident, quote, ToTokens};
 use syn::{
     parse::{discouraged::Speculative, Parse, ParseStream, Parser},
     punctuated::Punctuated,
@@ -170,12 +169,12 @@ impl Characteristic {
             if let RecordValueData::LitInt(uuid) = &uuid.data {
                 let uuid: u16 = uuid.base10_parse()?;
 
-                return Ok(Uuid::Uuid16(uuid));
+                Ok(Uuid::Uuid16(uuid))
             } else {
-                return Err(Error::new(uuid.span, "expected integer literal"));
+                Err(Error::new(uuid.span, "expected integer literal"))
             }
         } else {
-            return Err(Error::new(records.span, "missing `uuid`"));
+            Err(Error::new(records.span, "missing `uuid`"))
         }
     }
 
@@ -194,7 +193,7 @@ impl Characteristic {
                 {
                     return Err(Error::new(
                         span,
-                        &format!("defined multiple read permissions: {permission_flags:?}"),
+                        format!("defined multiple read permissions: {permission_flags:?}"),
                     ));
                 }
 
@@ -206,7 +205,7 @@ impl Characteristic {
                 {
                     return Err(Error::new(
                         span,
-                        &format!("defined multiple write permissions: {permission_flags:?}"),
+                        format!("defined multiple write permissions: {permission_flags:?}"),
                     ));
                 }
 
@@ -218,7 +217,7 @@ impl Characteristic {
                 {
                     return Err(Error::new(
                         span,
-                        &format!("defined multiple indication permissions: {permission_flags:?}"),
+                        format!("defined multiple indication permissions: {permission_flags:?}"),
                     ));
                 }
 
@@ -230,7 +229,7 @@ impl Characteristic {
                 {
                     return Err(Error::new(
                         span,
-                        &format!("defined multiple notification permissions: {permission_flags:?}"),
+                        format!("defined multiple notification permissions: {permission_flags:?}"),
                     ));
                 }
 
@@ -293,18 +292,18 @@ impl Characteristic {
                         _ => {
                             return Err(Error::new(
                                 span,
-                                &format!("unknown flag: {permission_flag}"),
+                                format!("unknown flag: {permission_flag}"),
                             ));
                         }
                     }
                 }
 
-                return Ok(permissions);
+                Ok(permissions)
             } else {
-                return Err(Error::new(permissions.span, "expected flags"));
+                Err(Error::new(permissions.span, "expected flags"))
             }
         } else {
-            return Err(Error::new(records.span, "missing `permissions`"));
+            Err(Error::new(records.span, "missing `permissions`"))
         }
     }
 
@@ -314,51 +313,49 @@ impl Characteristic {
                 RecordValueData::LitInt(length) => {
                     let length: u16 = length.base10_parse()?;
 
-                    return Ok(CharacteristicLength::Int(length));
+                    Ok(CharacteristicLength::Int(length))
                 }
-                RecordValueData::Path(path) => {
-                    return Ok(CharacteristicLength::Path(path.clone()));
-                }
-                _ => return Err(Error::new(length.span, "expected integer literal")),
+                RecordValueData::Path(path) => Ok(CharacteristicLength::Path(path.clone())),
+                _ => Err(Error::new(length.span, "expected integer literal")),
             }
         } else {
-            return Err(Error::new(records.span, "missing `length`"));
+            Err(Error::new(records.span, "missing `length`"))
         }
     }
 
     fn parse_user_description(records: &Records) -> syn::Result<Option<String>> {
         if let Some(user_description) = records.get("user_description") {
             if let RecordValueData::LitStr(user_description) = &user_description.data {
-                return Ok(Some(user_description.token().to_string()));
+                Ok(Some(user_description.token().to_string()))
             } else {
-                return Err(Error::new(user_description.span, "expected string literal"));
+                Err(Error::new(user_description.span, "expected string literal"))
             }
         } else {
-            return Ok(None);
+            Ok(None)
         }
     }
 
     fn parse_read_handler(records: &Records) -> syn::Result<Option<Path>> {
         if let Some(read_handler) = records.get("read_handler") {
             if let RecordValueData::Path(read_handler) = &read_handler.data {
-                return Ok(Some(read_handler.clone()));
+                Ok(Some(read_handler.clone()))
             } else {
-                return Err(Error::new(read_handler.span, "expected path"));
+                Err(Error::new(read_handler.span, "expected path"))
             }
         } else {
-            return Ok(None);
+            Ok(None)
         }
     }
 
     fn parse_write_handler(records: &Records) -> syn::Result<Option<Path>> {
         if let Some(write_handler) = records.get("write_handler") {
             if let RecordValueData::Path(write_handler) = &write_handler.data {
-                return Ok(Some(write_handler.clone()));
+                Ok(Some(write_handler.clone()))
             } else {
-                return Err(Error::new(write_handler.span, "expected path"));
+                Err(Error::new(write_handler.span, "expected path"))
             }
         } else {
-            return Ok(None);
+            Ok(None)
         }
     }
 
@@ -389,19 +386,19 @@ impl Service {
             if let RecordValueData::LitInt(uuid) = &uuid.data {
                 let uuid: u16 = uuid.base10_parse()?;
 
-                return Ok(Uuid::Uuid16(uuid));
+                Ok(Uuid::Uuid16(uuid))
             } else {
-                return Err(Error::new(uuid.span, "expected integer literal"));
+                Err(Error::new(uuid.span, "expected integer literal"))
             }
         } else {
-            return Err(Error::new(records.span, "missing `uuid`"));
+            Err(Error::new(records.span, "missing `uuid`"))
         }
     }
 
     fn parse_characteristics(records: &Records) -> syn::Result<Vec<Characteristic>> {
         if let Some(characteristics) = records.get("characteristics") {
             if let RecordValueData::Records(characteristics) = &characteristics.data {
-                return Ok(characteristics
+                characteristics
                     .iter()
                     .map(|(name, records)| match &records.data {
                         RecordValueData::Records(records) => {
@@ -409,15 +406,15 @@ impl Service {
                         }
                         _ => Err(Error::new(records.span, "expected record")),
                     })
-                    .try_collect()?);
+                    .try_collect()
             } else {
-                return Err(Error::new(
+                Err(Error::new(
                     characteristics.span,
                     "expected characteristics records",
-                ));
+                ))
             }
         } else {
-            return Err(Error::new(records.span, "missing `characteristics`"));
+            Err(Error::new(records.span, "missing `characteristics`"))
         }
     }
 
@@ -638,9 +635,10 @@ impl CustomServer1ServiceConfiguration {
             let uuid = &service.uuid;
             self.service_idxs.push(records.len() as u8);
 
-            let mut read_permission = Permissions::default();
-
-            read_permission.read = PermissionVariants::Enabled;
+            let read_permission = Permissions {
+                read: PermissionVariants::Enabled,
+                ..Default::default()
+            };
 
             records.push(quote!(
                 da14531_sdk::ble_stack::host::att::attm::AttmDesc128 {
@@ -715,11 +713,12 @@ impl CustomServer1ServiceConfiguration {
                 ));
 
                 if perm.has_indication() {
-                    let mut indication_cccd_permission = Permissions::default();
-
-                    indication_cccd_permission.read = PermissionVariants::Enabled;
-                    indication_cccd_permission.write = PermissionVariants::Enabled;
-                    indication_cccd_permission.write_request_accepted = true;
+                    let indication_cccd_permission = Permissions {
+                        read: PermissionVariants::Enabled,
+                        write: PermissionVariants::Enabled,
+                        write_request_accepted: true,
+                        ..Default::default()
+                    };
 
                     records.push(quote!(
                         da14531_sdk::ble_stack::host::att::attm::AttmDesc128 {

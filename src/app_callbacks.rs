@@ -289,7 +289,7 @@ impl Parse for AppCallbacks {
                     }
                 },
                 _ => {
-                    panic!("Unexpected field: {} = {:?}", key.to_string(), value);
+                    panic!("Unexpected field: {} = {:?}", key, value);
                 }
             }
         }
