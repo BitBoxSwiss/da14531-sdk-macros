@@ -16,7 +16,8 @@ use syn::{
 #[derive(Debug)]
 pub enum Uuid {
     Uuid16(u16),
-    Uuid128([u8; 16]),
+    // TODO: implement
+    //Uuid128([u8; 16]),
 }
 
 impl ToTokens for Uuid {
@@ -26,12 +27,11 @@ impl ToTokens for Uuid {
                 tokens.extend(quote!(
                     #uuid16
                 ));
-            }
-            Uuid::Uuid128(uuid128) => {
-                tokens.extend(quote!(
-                    [ #(#uuid128),* ]
-                ));
-            }
+            } /* Uuid::Uuid128(uuid128) => {
+                  tokens.extend(quote!(
+                      [ #(#uuid128),* ]
+                  ));
+              }*/
         }
     }
 }
@@ -56,9 +56,10 @@ impl Default for PermissionVariants {
 #[repr(u8)]
 pub enum UuidLength {
     L16 = 0,
-    L32 = 1,
-    L128 = 2,
-    RFU = 3,
+    // TODO: Implement
+    //L32 = 1,
+    //L128 = 2,
+    //Rfu = 3,
 }
 
 impl Default for UuidLength {
@@ -113,9 +114,9 @@ impl Permissions {
         self.indication != PermissionVariants::Disabled
     }
 
-    pub fn has_notification(&self) -> bool {
-        self.notification != PermissionVariants::Disabled
-    }
+    //pub fn has_notification(&self) -> bool {
+    //    self.notification != PermissionVariants::Disabled
+    //}
 }
 
 impl ToTokens for Permissions {
@@ -375,7 +376,7 @@ impl Characteristic {
 
 #[derive(Debug)]
 pub struct Service {
-    name: String,
+    //name: String,
     characteristics: Vec<Characteristic>,
     uuid: Uuid,
 }
@@ -418,12 +419,12 @@ impl Service {
         }
     }
 
-    fn parse(name: &str, records: &Records) -> syn::Result<Self> {
+    fn parse(_name: &str, records: &Records) -> syn::Result<Self> {
         let uuid = Self::parse_uuid(records)?;
         let characteristics = Self::parse_characteristics(records)?;
 
         Ok(Self {
-            name: name.to_string(),
+            //name: name.to_string(),
             characteristics,
             uuid,
         })
@@ -533,40 +534,43 @@ impl Parse for RecordValue {
 
         Err(Error::new(
             input.span(),
-            &format!("unexpected input: {input:?}"),
+            format!("unexpected input: {input:?}"),
         ))
     }
 }
 
 #[derive(Debug)]
 pub struct RecordKey {
-    span: Span,
+    //span: Span,
     key: String,
 }
 
 impl Parse for RecordKey {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        let span = input.span();
+        //let span = input.span();
         let key: Ident = input.parse()?;
         let key = key.to_string();
-        Ok(Self { span, key })
+        Ok(Self { /*span,*/ key })
     }
 }
 
 #[derive(Debug)]
 pub struct Record {
-    span: Span,
+    //span: Span,
     key: RecordKey,
     value: RecordValue,
 }
 
 impl Parse for Record {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        let span = input.span();
+        //let span = input.span();
         let key: RecordKey = input.parse()?;
         let value: RecordValue = input.parse()?;
 
-        Ok(Self { span, key, value })
+        Ok(Self {
+            /*span,*/ key,
+            value,
+        })
     }
 }
 
