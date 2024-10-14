@@ -305,8 +305,7 @@ impl AppCallbacks {
 
         if let Some(app_on_connection) = &self.app_on_connection {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_connection(conidx: u8, param: *const da14531_sdk::ble_stack::host::gap::gapc::task::GapcConnectionReqInd) {
+                extern "C" fn __app_on_connection(conidx: u8, param: *const da14531_sdk::ble_stack::host::gap::gapc::task::GapcConnectionReqInd) {
                     #app_on_connection(conidx, unsafe{&*param});
                 }
             ));
@@ -318,8 +317,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_disconnect) = &self.app_on_disconnect {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_disconnect(param: *const da14531_sdk::ble_stack::host::gap::gapc::task::GapcDisconnectInd) {
+                extern "C" fn __app_on_disconnect(param: *const da14531_sdk::ble_stack::host::gap::gapc::task::GapcDisconnectInd) {
                     #app_on_disconnect(unsafe{&*param});
                 }
             ));
@@ -329,8 +327,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_connect_failed) = &self.app_on_connect_failed {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_connect_failed() {
+                extern "C" fn __app_on_connect_failed() {
                     #app_on_connect_failed();
                 }
             ));
@@ -340,8 +337,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_update_params_rejected) = &self.app_on_update_params_rejected {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_update_params_rejected() {
+                extern "C" fn __app_on_update_params_rejected() {
                     #app_on_update_params_rejected();
                 }
             ));
@@ -353,8 +349,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_update_params_complete) = &self.app_on_update_params_complete {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_update_params_complete() {
+                extern "C" fn __app_on_update_params_complete() {
                     #app_on_update_params_complete();
                 }
             ));
@@ -366,8 +361,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_set_dev_config_complete) = &self.app_on_set_dev_config_complete {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_set_dev_config_complete() {
+                extern "C" fn __app_on_set_dev_config_complete() {
                     #app_on_set_dev_config_complete();
                 }
             ));
@@ -382,8 +376,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_adv_nonconn_complete) = &self.app_on_adv_nonconn_complete {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_adv_nonconn_complete() {
+                extern "C" fn __app_on_adv_nonconn_complete() {
                     #app_on_adv_nonconn_complete();
                 }
             ));
@@ -395,8 +388,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_adv_undirect_complete) = &self.app_on_adv_undirect_complete {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_adv_undirect_complete(status: u8) {
+                extern "C" fn __app_on_adv_undirect_complete(status: u8) {
                     #app_on_adv_undirect_complete(status);
                 }
             ));
@@ -408,8 +400,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_adv_direct_complete) = &self.app_on_adv_direct_complete {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_adv_direct_complete() {
+                extern "C" fn __app_on_adv_direct_complete() {
                     #app_on_adv_direct_complete();
                 }
             ));
@@ -421,8 +412,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_db_init_complete) = &self.app_on_db_init_complete {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_db_init_complete() {
+                extern "C" fn __app_on_db_init_complete() {
                     #app_on_db_init_complete();
                 }
             ));
@@ -437,8 +427,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_scanning_completed) = &self.app_on_scanning_completed {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_scanning_completed() {
+                extern "C" fn __app_on_scanning_completed() {
                     #app_on_scanning_completed();
                 }
             ));
@@ -450,8 +439,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_adv_report_ind) = &self.app_on_adv_report_ind {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_adv_report_ind() {
+                extern "C" fn __app_on_adv_report_ind() {
                     #app_on_adv_report_ind();
                 }
             ));
@@ -461,8 +449,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_get_dev_name) = &self.app_on_get_dev_name {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_get_dev_name() {
+                extern "C" fn __app_on_get_dev_name() {
                     #app_on_get_dev_name();
                 }
             ));
@@ -474,8 +461,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_get_dev_appearance) = &self.app_on_get_dev_appearance {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_get_dev_appearance() {
+                extern "C" fn __app_on_get_dev_appearance() {
                     #app_on_get_dev_appearance();
                 }
             ));
@@ -490,8 +476,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_get_dev_slv_pref_params) = &self.app_on_get_dev_slv_pref_params {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_get_dev_slv_pref_params() {
+                extern "C" fn __app_on_get_dev_slv_pref_params() {
                     #app_on_get_dev_slv_pref_params();
                 }
             ));
@@ -506,8 +491,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_set_dev_info) = &self.app_on_set_dev_info {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_set_dev_info() {
+                extern "C" fn __app_on_set_dev_info() {
                     #app_on_set_dev_info();
                 }
             ));
@@ -519,8 +503,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_data_length_change) = &self.app_on_data_length_change {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_data_length_change() {
+                extern "C" fn __app_on_data_length_change() {
                     #app_on_data_length_change();
                 }
             ));
@@ -532,8 +515,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_update_params_request) = &self.app_on_update_params_request {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_update_params_request() {
+                extern "C" fn __app_on_update_params_request() {
                     #app_on_update_params_request();
                 }
             ));
@@ -548,8 +530,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_generate_static_random_addr) = &self.app_on_generate_static_random_addr {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_generate_static_random_addr(addr: *mut da14531_sdk::platform::core_modules::common::BDAddr) {
+                extern "C" fn __app_on_generate_static_random_addr(addr: *mut da14531_sdk::platform::core_modules::common::BDAddr) {
                     let addr_ref = unsafe {&mut *addr};
                     #app_on_generate_static_random_addr(addr_ref);
                 }
@@ -565,8 +546,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_svc_changed_cfg_ind) = &self.app_on_svc_changed_cfg_ind {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_svc_changed_cfg_ind() {
+                extern "C" fn __app_on_svc_changed_cfg_ind() {
                     #app_on_svc_changed_cfg_ind();
                 }
             ));
@@ -578,8 +558,7 @@ impl AppCallbacks {
         }
         if let Some(app_on_get_peer_features) = &self.app_on_get_peer_features {
             callback_wrappers.push(quote!(
-                #[no_mangle]
-                pub extern "C" fn __app_on_get_peer_features() {
+                extern "C" fn __app_on_get_peer_features() {
                     #app_on_get_peer_features();
                 }
             ));
