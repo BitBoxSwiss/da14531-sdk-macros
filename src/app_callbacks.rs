@@ -306,7 +306,8 @@ impl AppCallbacks {
         if let Some(app_on_connection) = &self.app_on_connection {
             callback_wrappers.push(quote!(
                 extern "C" fn __app_on_connection(conidx: u8, param: *const da14531_sdk::ble_stack::host::gap::gapc::task::GapcConnectionReqInd) {
-                    #app_on_connection(conidx, unsafe{&*param});
+                    let param = unsafe {&*param};
+                    #app_on_connection(conidx, param);
                 }
             ));
             struct_fields.push(quote!(app_on_connection: Some(__app_on_connection)));
@@ -318,7 +319,8 @@ impl AppCallbacks {
         if let Some(app_on_disconnect) = &self.app_on_disconnect {
             callback_wrappers.push(quote!(
                 extern "C" fn __app_on_disconnect(param: *const da14531_sdk::ble_stack::host::gap::gapc::task::GapcDisconnectInd) {
-                    #app_on_disconnect(unsafe{&*param});
+                    let param = unsafe {&*param};
+                    #app_on_disconnect(param);
                 }
             ));
             struct_fields.push(quote!(app_on_disconnect: Some(__app_on_disconnect)));
@@ -515,8 +517,10 @@ impl AppCallbacks {
         }
         if let Some(app_on_update_params_request) = &self.app_on_update_params_request {
             callback_wrappers.push(quote!(
-                extern "C" fn __app_on_update_params_request() {
-                    #app_on_update_params_request();
+                extern "C" fn __app_on_update_params_request(param: *const gapc_param_update_req_ind ,cfm: *mut gapc_param_update_cfm) {
+                    let param = unsafe {&*param};
+                    let cfm = unsafe {&mut *cfm};
+                    #app_on_update_params_request(param, cfm);
                 }
             ));
             struct_fields.push(quote!(
@@ -531,8 +535,8 @@ impl AppCallbacks {
         if let Some(app_on_generate_static_random_addr) = &self.app_on_generate_static_random_addr {
             callback_wrappers.push(quote!(
                 extern "C" fn __app_on_generate_static_random_addr(addr: *mut da14531_sdk::platform::core_modules::common::BDAddr) {
-                    let addr_ref = unsafe {&mut *addr};
-                    #app_on_generate_static_random_addr(addr_ref);
+                    let addr = unsafe {&mut *addr};
+                    #app_on_generate_static_random_addr(addr);
                 }
             ));
             struct_fields.push(quote!(
@@ -558,8 +562,9 @@ impl AppCallbacks {
         }
         if let Some(app_on_get_peer_features) = &self.app_on_get_peer_features {
             callback_wrappers.push(quote!(
-                extern "C" fn __app_on_get_peer_features() {
-                    #app_on_get_peer_features();
+                extern "C" fn __app_on_get_peer_features(conn_id: u8, features: *const gapc_peer_features_ind) {
+                    let features = unsafe {&*features};
+                    #app_on_get_peer_features(conn_id, features);
                 }
             ));
             struct_fields.push(quote!(
