@@ -505,8 +505,9 @@ impl AppCallbacks {
         }
         if let Some(app_on_data_length_change) = &self.app_on_data_length_change {
             callback_wrappers.push(quote!(
-                extern "C" fn __app_on_data_length_change() {
-                    #app_on_data_length_change();
+                extern "C" fn __app_on_data_length_change(conn_id: u8, pkt: *mut gapc_le_pkt_size_ind) {
+                    let pkt = unsafe {&mut *pkt};
+                    #app_on_data_length_change(conn_id, pkt);
                 }
             ));
             struct_fields.push(quote!(
