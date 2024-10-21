@@ -796,7 +796,7 @@ impl CustomServer1ServiceConfiguration {
             /// Setup custom profile funcs
             #[no_mangle]
             pub static CUST_PRF_FUNCS: [CustPrfFuncCallbacks; 1] = [CustPrfFuncCallbacks {
-                task_id: TASK_ID_CUSTS1,
+                task_id: da14531_sdk::platform::core_modules::rwip::KeApiId::TASK_ID_CUSTS1,
                 att_db: &CUSTS1_ATT_DB as *const _ as *const da14531_sdk::bindings::attm_desc_128,
                 max_nb_att: CUSTS1_ATT_DB_LEN,
                 db_create_func: Some(app_custs1_create_db),
@@ -807,14 +807,14 @@ impl CustomServer1ServiceConfiguration {
 
 
             #[no_mangle]
-            pub extern "C" fn custs_get_func_callbacks(task_id: da14531_sdk::platform::core_modules::rwip::KeApiId) -> *const da14531_sdk::app_modules::app_custs::CustPrfFuncCallbacks {
+            pub extern "C" fn custs_get_func_callbacks(task_id: da14531_sdk::platform::core_modules::rwip::KeApiId::Type) -> *const da14531_sdk::app_modules::app_custs::CustPrfFuncCallbacks {
                 for pfcb in &CUST_PRF_FUNCS {
                     if pfcb.task_id == task_id {
 
                         let pfcb_ptr = pfcb as *const _ as *const da14531_sdk::app_modules::app_custs::CustPrfFuncCallbacks;
 
                         return pfcb_ptr;
-                    } else if pfcb.task_id == da14531_sdk::platform::core_modules::rwip::TASK_ID_INVALID {
+                    } else if pfcb.task_id == da14531_sdk::platform::core_modules::rwip::KeApiId::TASK_ID_INVALID {
                         break;
                     }
                 }
@@ -862,6 +862,7 @@ impl CustomServer1ServiceConfiguration {
                 dest_id: da14531_sdk::platform::core_modules::ke::task::KeTaskId,
                 src_id: da14531_sdk::platform::core_modules::ke::task::KeTaskId,
             ) {
+
                 match msg_id as u32 {
                     da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::CUSTS1_VAL_WRITE_IND => {
                         let param = param as *const da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::Custs1ValWriteInd;

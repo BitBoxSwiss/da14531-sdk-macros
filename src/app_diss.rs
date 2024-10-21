@@ -324,7 +324,7 @@ impl DeviceInformationServiceConfiguration {
                             DIS_SYSTEM_ID_CHAR_SUP,
                         },
                     },
-                    platform::core_modules::rwip::{TASK_APP, TASK_GAPM, TASK_ID_DISS},
+                    platform::core_modules::rwip::{KeTaskType::TASK_APP, KeTaskType::TASK_GAPM, KeApiId::TASK_ID_DISS},
                 };
 
                 #[no_mangle]
