@@ -16,8 +16,7 @@ use syn::{
 #[derive(Debug)]
 pub enum Uuid {
     Uuid16(u16),
-    // TODO: implement
-    //Uuid128([u8; 16]),
+    Uuid128([u8; 16]),
 }
 
 impl ToTokens for Uuid {
@@ -27,11 +26,12 @@ impl ToTokens for Uuid {
                 tokens.extend(quote!(
                     #uuid16
                 ));
-            } /* Uuid::Uuid128(uuid128) => {
-                  tokens.extend(quote!(
-                      [ #(#uuid128),* ]
-                  ));
-              }*/
+            }
+            Uuid::Uuid128(uuid128) => {
+                tokens.extend(quote!(
+                    [ #(#uuid128),* ]
+                ));
+            }
         }
     }
 }
@@ -168,9 +168,11 @@ impl Characteristic {
     fn parse_uuid(records: &Records) -> syn::Result<Uuid> {
         if let Some(uuid) = records.get("uuid") {
             if let RecordValueData::LitInt(uuid) = &uuid.data {
-                let uuid: u16 = uuid.base10_parse()?;
-
-                Ok(Uuid::Uuid16(uuid))
+                if let Ok(uuid) = uuid.base10_parse() {
+                    return Ok(Uuid::Uuid16(uuid));
+                }
+                let uuid: u128 = uuid.base10_parse()?;
+                Ok(Uuid::Uuid128(uuid.to_le_bytes()))
             } else {
                 Err(Error::new(uuid.span, "expected integer literal"))
             }
@@ -385,9 +387,11 @@ impl Service {
     fn parse_uuid(records: &Records) -> syn::Result<Uuid> {
         if let Some(uuid) = records.get("uuid") {
             if let RecordValueData::LitInt(uuid) = &uuid.data {
-                let uuid: u16 = uuid.base10_parse()?;
-
-                Ok(Uuid::Uuid16(uuid))
+                if let Ok(uuid) = uuid.base10_parse() {
+                    return Ok(Uuid::Uuid16(uuid));
+                }
+                let uuid: u128 = uuid.base10_parse()?;
+                Ok(Uuid::Uuid128(uuid.to_le_bytes()))
             } else {
                 Err(Error::new(uuid.span, "expected integer literal"))
             }
