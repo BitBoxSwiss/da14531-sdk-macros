@@ -451,8 +451,9 @@ impl AppCallbacks {
         }
         if let Some(app_on_get_dev_name) = &self.app_on_get_dev_name {
             callback_wrappers.push(quote!(
-                extern "C" fn __app_on_get_dev_name() {
-                    #app_on_get_dev_name();
+                extern "C" fn __app_on_get_dev_name(device_name: *mut da14531_sdk::bindings::app_device_name) {
+                    let device_name = unsafe {&mut *device_name};
+                    #app_on_get_dev_name(device_name);
                 }
             ));
             struct_fields.push(quote!(app_on_get_dev_name: Some(__app_on_get_dev_name)));
@@ -463,8 +464,9 @@ impl AppCallbacks {
         }
         if let Some(app_on_get_dev_appearance) = &self.app_on_get_dev_appearance {
             callback_wrappers.push(quote!(
-                extern "C" fn __app_on_get_dev_appearance() {
-                    #app_on_get_dev_appearance();
+                extern "C" fn __app_on_get_dev_appearance(appearance: *mut u16) {
+                    let appearance = unsafe { &mut *appearance };
+                    #app_on_get_dev_appearance(appearance);
                 }
             ));
             struct_fields.push(quote!(
