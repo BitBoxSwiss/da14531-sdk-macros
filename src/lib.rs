@@ -1,5 +1,6 @@
 #![feature(iterator_try_collect)]
 
+mod app_bond_db_callbacks;
 mod app_callbacks;
 mod app_custs;
 mod app_diss;
@@ -11,6 +12,7 @@ use app_diss::DeviceInformationServiceConfiguration;
 use proc_macro::TokenStream;
 use syn::parse_macro_input;
 
+use app_bond_db_callbacks::AppBondDbCallbacks;
 use app_callbacks::AppCallbacks;
 use default_handlers_configuration::DefaultHandlersConfiguration;
 use main_loop_callbacks::ArchMainLoopCallbacks;
@@ -25,6 +27,14 @@ pub fn register_main_loop_callbacks(input: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn register_app_callbacks(input: TokenStream) -> TokenStream {
     let callbacks = parse_macro_input!(input as AppCallbacks);
+    let x = callbacks.generate();
+
+    x.into()
+}
+
+#[proc_macro]
+pub fn register_app_bond_db_callbacks(input: TokenStream) -> TokenStream {
+    let callbacks = parse_macro_input!(input as AppBondDbCallbacks);
     let x = callbacks.generate();
 
     x.into()

@@ -877,6 +877,7 @@ impl CustomServer1ServiceConfiguration {
                         }
                     }
                     da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::CUSTS1_ATT_INFO_REQ => {
+                        rprintln!("custs1_att_info_req");
                         let param = param as *const da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::Custs1AttInfoReq;
                         let param = unsafe { &*param };
                         let att_idx = param.att_idx;
@@ -929,18 +930,22 @@ impl CustomServer1ServiceConfiguration {
                             }
                         }
                     }
-                    _ => {}
+                    da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::CUSTS1_VAL_IND_REQ => {
+                        rprintln!("custs1_val_ind_req");
+                    }
+                    // response after an indication is triggered
+                    da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::CUSTS1_VAL_IND_CFM => {
+                        //rprintln!("CUSTS1_VAL_IND_CFM");
+                        //let param = param as *const da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::Custs1ValIndCfm;
+                        //let param = unsafe { *param };
+                        //match param.handle {
+                        //    _ => {}
+                        //}
+                    }
+                    e => {rprintln!("unhandled event {}", e)}
                     // da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::CUSTS1_VAL_NTF_CFM => {
                     //     rprintln!("CUSTS1_VAL_NTF_CFM");
                     //     let param = param as *const Custs1ValNtfCfm;
-                    //     let param = unsafe { *param };
-                    //     match param.handle {
-                    //         _ => {}
-                    //     }
-                    // }
-                    // da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::CUSTS1_VAL_IND_CFM => {
-                    //     rprintln!("CUSTS1_VAL_IND_CFM");
-                    //     let param = param as *const Custs1ValIndCfm;
                     //     let param = unsafe { *param };
                     //     match param.handle {
                     //         _ => {}

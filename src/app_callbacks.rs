@@ -1,7 +1,6 @@
 use quote::quote;
 use syn::{parse::Parse, punctuated::Punctuated, Expr, FieldValue, Member, Path, Token};
 
-#[derive(Debug)]
 pub struct AppCallbacks {
     app_on_connection: Option<Path>,
     app_on_disconnect: Option<Path>,
@@ -24,6 +23,43 @@ pub struct AppCallbacks {
     app_on_generate_static_random_addr: Option<Path>,
     app_on_svc_changed_cfg_ind: Option<Path>,
     app_on_get_peer_features: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_pairing_request: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_tk_exch: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_irk_exch: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_csrk_exch: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_ltk_exch: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_pairing_succeeded: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_encrypt_ind: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_encrypt_req_ind: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_security_req_ind: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_addr_solved_ind: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_addr_resolve_failed: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_ral_cmp_evt: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_ral_size_ind: Option<Path>,
+    #[cfg(feature = "app_security")]
+    app_on_ral_addr_ind: Option<Path>,
+}
+
+macro_rules! path_try {
+    ($value:ident) => {
+        match $value {
+            Expr::Path(path) => Some(path.path),
+            _ => panic!("Unexpected expression: {:?}", $value),
+        }
+    };
 }
 
 impl Parse for AppCallbacks {
@@ -53,6 +89,34 @@ impl Parse for AppCallbacks {
             app_on_generate_static_random_addr: None,
             app_on_svc_changed_cfg_ind: None,
             app_on_get_peer_features: None,
+            #[cfg(feature = "app_security")]
+            app_on_pairing_request: None,
+            #[cfg(feature = "app_security")]
+            app_on_tk_exch: None,
+            #[cfg(feature = "app_security")]
+            app_on_irk_exch: None,
+            #[cfg(feature = "app_security")]
+            app_on_csrk_exch: None,
+            #[cfg(feature = "app_security")]
+            app_on_ltk_exch: None,
+            #[cfg(feature = "app_security")]
+            app_on_pairing_succeeded: None,
+            #[cfg(feature = "app_security")]
+            app_on_encrypt_ind: None,
+            #[cfg(feature = "app_security")]
+            app_on_encrypt_req_ind: None,
+            #[cfg(feature = "app_security")]
+            app_on_security_req_ind: None,
+            #[cfg(feature = "app_security")]
+            app_on_addr_solved_ind: None,
+            #[cfg(feature = "app_security")]
+            app_on_addr_resolve_failed: None,
+            #[cfg(feature = "app_security")]
+            app_on_ral_cmp_evt: None,
+            #[cfg(feature = "app_security")]
+            app_on_ral_size_ind: None,
+            #[cfg(feature = "app_security")]
+            app_on_ral_addr_ind: None,
         };
 
         for field in fields {
@@ -64,230 +128,125 @@ impl Parse for AppCallbacks {
             };
             let value = field.expr;
             match key.to_string().as_str() {
-                "app_on_connection" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_connection = Some(path.path);
-                    }
-                    _ => {
-                        panic!("Unextpected expression for app_on_connection: {:?}", value);
-                    }
-                },
-                "app_on_disconnect" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_disconnect = Some(path.path);
-                    }
-                    _ => {
-                        panic!("Unextpected expression for app_on_disconnect: {:?}", value);
-                    }
-                },
-                "app_on_connect_failed" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_connect_failed = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_connect_failed: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_update_params_rejected" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_update_params_rejected = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_update_params_rejected: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_update_params_complete" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_update_params_complete = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_update_params_complete: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_set_dev_config_complete" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_set_dev_config_complete = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_set_dev_config_complete: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_adv_nonconn_complete" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_adv_nonconn_complete = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_adv_nonconn_complete: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_adv_undirect_complete" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_adv_undirect_complete = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_adv_undirect_complete: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_adv_direct_complete" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_adv_direct_complete = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_adv_direct_complete: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_db_init_complete" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_db_init_complete = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_db_init_complete: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_scanning_completed" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_scanning_completed = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_scanning_completed: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_adv_report_ind" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_adv_report_ind = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_adv_report_ind: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_get_dev_name" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_get_dev_name = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_get_dev_name: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_get_dev_appearance" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_get_dev_appearance = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_get_dev_appearance: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_get_dev_slv_pref_params" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_get_dev_slv_pref_params = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_get_dev_slv_pref_params: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_set_dev_info" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_set_dev_info = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_set_dev_info: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_data_length_change" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_data_length_change = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_data_length_change: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_update_params_request" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_update_params_request = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_update_params_request: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_generate_static_random_addr" => {
-                    match value {
-                        Expr::Path(path) => {
-                            callbacks.app_on_generate_static_random_addr = Some(path.path);
-                        }
-                        _ => {
-                            panic!("Unextpected expression for app_on_generate_static_random_addr: {:?}", value);
-                        }
-                    }
+                "app_on_connection" => {
+                    callbacks.app_on_connection = path_try!(value);
                 }
-                "app_on_svc_changed_cfg_ind" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_svc_changed_cfg_ind = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_svc_changed_cfg_ind: {:?}",
-                            value
-                        );
-                    }
-                },
-                "app_on_get_peer_features" => match value {
-                    Expr::Path(path) => {
-                        callbacks.app_on_get_peer_features = Some(path.path);
-                    }
-                    _ => {
-                        panic!(
-                            "Unextpected expression for app_on_get_peer_features: {:?}",
-                            value
-                        );
-                    }
-                },
+                "app_on_disconnect" => {
+                    callbacks.app_on_disconnect = path_try!(value);
+                }
+                "app_on_connect_failed" => {
+                    callbacks.app_on_connect_failed = path_try!(value);
+                }
+                "app_on_update_params_rejected" => {
+                    callbacks.app_on_update_params_rejected = path_try!(value);
+                }
+                "app_on_update_params_complete" => {
+                    callbacks.app_on_update_params_complete = path_try!(value);
+                }
+                "app_on_set_dev_config_complete" => {
+                    callbacks.app_on_set_dev_config_complete = path_try!(value);
+                }
+                "app_on_adv_nonconn_complete" => {
+                    callbacks.app_on_adv_nonconn_complete = path_try!(value);
+                }
+                "app_on_adv_undirect_complete" => {
+                    callbacks.app_on_adv_undirect_complete = path_try!(value);
+                }
+                "app_on_adv_direct_complete" => {
+                    callbacks.app_on_adv_direct_complete = path_try!(value);
+                }
+                "app_on_db_init_complete" => {
+                    callbacks.app_on_db_init_complete = path_try!(value);
+                }
+                "app_on_scanning_completed" => {
+                    callbacks.app_on_scanning_completed = path_try!(value);
+                }
+                "app_on_adv_report_ind" => {
+                    callbacks.app_on_adv_report_ind = path_try!(value);
+                }
+                "app_on_get_dev_name" => {
+                    callbacks.app_on_get_dev_name = path_try!(value);
+                }
+                "app_on_get_dev_appearance" => {
+                    callbacks.app_on_get_dev_appearance = path_try!(value);
+                }
+                "app_on_get_dev_slv_pref_params" => {
+                    callbacks.app_on_get_dev_slv_pref_params = path_try!(value);
+                }
+                "app_on_set_dev_info" => {
+                    callbacks.app_on_set_dev_info = path_try!(value);
+                }
+                "app_on_data_length_change" => {
+                    callbacks.app_on_data_length_change = path_try!(value);
+                }
+                "app_on_update_params_request" => {
+                    callbacks.app_on_update_params_request = path_try!(value);
+                }
+                "app_on_generate_static_random_addr" => {
+                    callbacks.app_on_generate_static_random_addr = path_try!(value);
+                }
+                "app_on_svc_changed_cfg_ind" => {
+                    callbacks.app_on_svc_changed_cfg_ind = path_try!(value);
+                }
+                "app_on_get_peer_features" => {
+                    callbacks.app_on_get_peer_features = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_pairing_request" => {
+                    callbacks.app_on_pairing_request = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_tk_exch" => {
+                    callbacks.app_on_tk_exch = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_irk_exch" => {
+                    callbacks.app_on_irk_exch = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_csrk_exch" => {
+                    callbacks.app_on_csrk_exch = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_ltk_exch" => {
+                    callbacks.app_on_ltk_exch = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_pairing_succeeded" => {
+                    callbacks.app_on_pairing_succeeded = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_encrypt_ind" => {
+                    callbacks.app_on_encrypt_ind = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_encrypt_req_ind" => {
+                    callbacks.app_on_encrypt_req_ind = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_security_req_ind" => {
+                    callbacks.app_on_security_req_ind = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_addr_solved_ind" => {
+                    callbacks.app_on_addr_solved_ind = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_addr_resolve_failed" => {
+                    callbacks.app_on_addr_resolve_failed = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_ral_cmp_evt" => {
+                    callbacks.app_on_ral_cmp_evt = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_ral_size_ind" => {
+                    callbacks.app_on_ral_size_ind = path_try!(value);
+                }
+                #[cfg(feature = "app_security")]
+                "app_on_ral_addr_ind" => {
+                    callbacks.app_on_ral_addr_ind = path_try!(value);
+                }
                 _ => {
                     panic!("Unexpected field: {} = {:?}", key, value);
                 }
@@ -575,6 +534,208 @@ impl AppCallbacks {
             ));
         } else {
             struct_fields.push(quote!(app_on_get_peer_features: None));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_pairing_request) = &self.app_on_pairing_request {
+            callback_wrappers.push(quote!(
+                extern "C" fn __app_on_pairing_request(conn_id: u8, param: *const da14531_sdk::bindings::gapc_bond_req_ind) {
+                    let param = unsafe {&*param};
+                    #app_on_pairing_request(conn_id, param);
+                }
+            ));
+            struct_fields.push(quote!(
+                app_on_pairing_request: Some(__app_on_pairing_request)
+            ));
+        } else {
+            struct_fields.push(quote!(app_on_pairing_request: Some(da14531_sdk::bindings::default_app_on_pairing_request)));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_tk_exch) = &self.app_on_tk_exch {
+            callback_wrappers.push(quote!(
+                extern "C" fn __app_on_tk_exch(conn_id: u8, param: *const da14531_sdk::bindings::gapc_bond_req_ind) {
+                    let param = unsafe {&*param};
+                    #app_on_tk_exch(conn_id, param);
+                }
+            ));
+            struct_fields.push(quote!(
+                app_on_tk_exch: Some(__app_on_tk_exch)
+            ));
+        } else {
+            struct_fields
+                .push(quote!(app_on_tk_exch: Some(da14531_sdk::bindings::default_app_on_tk_exch)));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_irk_exch) = &self.app_on_irk_exch {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_irk_exch(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_irk_exch(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_irk_exch: Some(__app_on_irk_exch)
+            //));
+        } else {
+            struct_fields.push(quote!(app_on_irk_exch: None));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_csrk_exch) = &self.app_on_csrk_exch {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_csrk_exch(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_csrk_exch(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_csrk_exch: Some(__app_on_csrk_exch)
+            //));
+        } else {
+            struct_fields.push(
+                quote!(app_on_csrk_exch: Some(da14531_sdk::bindings::default_app_on_csrk_exch)),
+            );
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_ltk_exch) = &self.app_on_ltk_exch {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_ltk_exch(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_ltk_exch(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_ltk_exch: Some(__app_on_ltk_exch)
+            //));
+        } else {
+            struct_fields.push(quote!(app_on_ltk_exch: None));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_pairing_succeeded) = &self.app_on_pairing_succeeded {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_pairing_succeeded(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_pairing_succeeded(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_pairing_succeeded: Some(__app_on_pairing_succeeded)
+            //));
+        } else {
+            struct_fields.push(quote!(app_on_pairing_succeeded: Some(da14531_sdk::bindings::default_app_on_pairing_succeeded)));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_encrypt_ind) = &self.app_on_encrypt_ind {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_encrypt_ind(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_encrypt_ind(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_encrypt_ind: Some(__app_on_encrypt_ind)
+            //));
+        } else {
+            struct_fields.push(quote!(app_on_encrypt_ind: None));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_encrypt_req_ind) = &self.app_on_encrypt_req_ind {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_encrypt_req_ind(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_encrypt_req_ind(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_encrypt_req_ind: Some(__app_on_encrypt_req_ind)
+            //));
+        } else {
+            struct_fields
+                .push(quote!(app_on_encrypt_req_ind: Some(da14531_sdk::bindings::default_app_on_encrypt_req_ind)));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_security_req_ind) = &self.app_on_security_req_ind {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_security_req_ind(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_security_req_ind(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_security_req_ind: Some(__app_on_security_req_ind)
+            //));
+        } else {
+            struct_fields.push(quote!(app_on_security_req_ind: None));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_addr_solved_ind) = &self.app_on_addr_solved_ind {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_addr_solved_ind(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_addr_solved_ind(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_addr_solved_ind: Some(__app_on_addr_solved_ind)
+            //));
+        } else {
+            struct_fields.push(quote!(app_on_addr_solved_ind: Some(da14531_sdk::bindings::default_app_on_addr_solved_ind)));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_addr_resolve_failed) = &self.app_on_addr_resolve_failed {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_addr_resolve_failed(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_addr_resolve_failed(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_addr_resolve_failed: Some(__app_on_addr_resolve_failed)
+            //));
+        } else {
+            struct_fields.push(quote!(app_on_addr_resolve_failed: Some(da14531_sdk::bindings::default_app_on_addr_resolve_failed)));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_ral_cmp_evt) = &self.app_on_ral_cmp_evt {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_ral_cmp_evt(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_ral_cmp_evt(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_ral_cmp_evt: Some(__app_on_ral_cmp_evt)
+            //));
+        } else {
+            struct_fields.push(
+                quote!(app_on_ral_cmp_evt: Some(da14531_sdk::bindings::default_app_on_ral_cmp_evt)),
+            );
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_ral_size_ind) = &self.app_on_ral_size_ind {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_ral_size_ind(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_ral_size_ind(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_ral_size_ind: Some(__app_on_ral_size_ind)
+            //));
+        } else {
+            struct_fields.push(quote!(app_on_ral_size_ind: None));
+        }
+        #[cfg(feature = "app_security")]
+        if let Some(app_on_ral_addr_ind) = &self.app_on_ral_addr_ind {
+            //callback_wrappers.push(quote!(
+            //    extern "C" fn __app_on_ral_addr_ind(conn_id: u8, features: *const gapc_peer_features_ind) {
+            //        let features = unsafe {&*features};
+            //        #app_on_ral_addr_ind(conn_id, features);
+            //    }
+            //));
+            //struct_fields.push(quote!(
+            //    app_on_ral_addr_ind: Some(__app_on_ral_addr_ind)
+            //));
+        } else {
+            struct_fields.push(quote!(app_on_ral_addr_ind: None));
         }
 
         quote!(
