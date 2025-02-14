@@ -606,7 +606,9 @@ impl AppCallbacks {
             //    app_on_ltk_exch: Some(__app_on_ltk_exch)
             //));
         } else {
-            struct_fields.push(quote!(app_on_ltk_exch: None));
+            struct_fields.push(
+                quote!(app_on_ltk_exch: Some(da14531_sdk::bindings::default_app_on_ltk_exch)),
+            );
         }
         #[cfg(feature = "app_security")]
         if let Some(app_on_pairing_succeeded) = &self.app_on_pairing_succeeded {
