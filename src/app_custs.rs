@@ -866,6 +866,7 @@ impl CustomServer1ServiceConfiguration {
                 dest_id: da14531_sdk::platform::core_modules::ke::task::KeTaskId,
                 src_id: da14531_sdk::platform::core_modules::ke::task::KeTaskId,
             ) {
+                //rprintln!("user_catch_rest_handler");
 
                 match msg_id as u32 {
                     da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::CUSTS1_VAL_WRITE_IND => {
@@ -877,7 +878,7 @@ impl CustomServer1ServiceConfiguration {
                         }
                     }
                     da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::CUSTS1_ATT_INFO_REQ => {
-                        rprintln!("custs1_att_info_req");
+                        //rprintln!("custs1_att_info_req");
                         let param = param as *const da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::Custs1AttInfoReq;
                         let param = unsafe { &*param };
                         let att_idx = param.att_idx;
@@ -931,7 +932,7 @@ impl CustomServer1ServiceConfiguration {
                         }
                     }
                     da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::CUSTS1_VAL_IND_REQ => {
-                        rprintln!("custs1_val_ind_req");
+                        //rprintln!("custs1_val_ind_req");
                     }
                     // response after an indication is triggered
                     da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::CUSTS1_VAL_IND_CFM => {
@@ -942,7 +943,9 @@ impl CustomServer1ServiceConfiguration {
                         //    _ => {}
                         //}
                     }
-                    e => {rprintln!("unhandled event {}", e)}
+                    e => {
+                        //rprintln!("unhandled event {}", e)
+                        }
                     // da14531_sdk::ble_stack::profiles::custom::custs::custs1::task::CUSTS1_VAL_NTF_CFM => {
                     //     rprintln!("CUSTS1_VAL_NTF_CFM");
                     //     let param = param as *const Custs1ValNtfCfm;
